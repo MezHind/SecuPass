@@ -1,6 +1,6 @@
 # 🔐 SecuPass
 
-> Outil éducatif en Python pour **générer**, **évaluer** et **comprendre** la robustesse des mots de passe, avec en bonus un mini-scanner de fichiers suspects.
+> Outil éducatif en Python pour **générer**, **évaluer** et **comprendre** la robustesse des mots de passe.
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)
 ![Interface](https://img.shields.io/badge/UI-CLI%20%2B%20CustomTkinter-informational)
@@ -15,10 +15,9 @@ Projet réalisé dans le cadre de ma formation d'**ingénieur en cybersécurité
 
 - mettre en pratique les bonnes pratiques de **génération cryptographiquement sûre** de secrets ;
 - implémenter un **évaluateur heuristique** de robustesse de mots de passe ;
-- fournir un **retour pédagogique** à l'utilisateur sur les critères de sécurité ;
-- explorer les bases de la **détection statique** de fichiers suspects (module bonus).
+- fournir un **retour pédagogique** à l'utilisateur sur les critères de sécurité.
 
-> ⚠️ **Projet pédagogique** : il ne remplace ni un gestionnaire de mots de passe, ni un antivirus, ni un audit de sécurité.
+> ⚠️ **Projet pédagogique** : il ne remplace ni un gestionnaire de mots de passe, ni un audit de sécurité.
 
 ---
 
@@ -62,14 +61,30 @@ Chaque faiblesse détectée produit une **recommandation personnalisée**.
 | `main_modern.py` | Interface graphique moderne (mode sombre) avec [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter) |
 | `test.py` | Boucle de test rapide de l'évaluateur en console |
 
-### 4. Module bonus : scanner de fichiers suspects (`proget2/main.py`)
-Mini-outil de détection **statique** qui parcourt un répertoire selon trois méthodes :
 
-1. **Nom de fichier** : comparaison avec une liste de noms connus comme suspects ;
-2. **Empreinte (hash)** : calcul du MD5 de chaque fichier et comparaison avec une liste de hash malveillants ;
-3. **Chaînes de caractères** : recherche de mots-clés suspects (`steal`, `keylogger`…) dans le contenu binaire.
+---
 
-> Les listes fournies sont des **exemples fictifs** destinés à illustrer les principes de détection par signature.
+## 📸 Aperçu
+
+### Interface graphique
+
+| Écran d'accueil | Génération d'un mot de passe |
+|:---:|:---:|
+| ![Accueil](images/01-accueil.png) | ![Génération](images/02-generation.png) |
+
+### Évaluation de la robustesse
+
+| Très faible (1/6) | Faible (3/6) |
+|:---:|:---:|
+| ![Très faible](images/04-tres-faible.png) | ![Faible](images/05-faible.png) |
+
+| Correct (5/6) | Très fort (6/6) |
+|:---:|:---:|
+| ![Correct](images/06-correct.png) | ![Très fort](images/03-tres-fort.png) |
+
+Lorsqu'un mot de passe « Très fort » est atteint, l'application propose de quitter :
+
+![Succès](images/07-succes.png)
 
 ---
 
@@ -82,8 +97,7 @@ SecuPass/
 ├── main.py             # Interface CLI
 ├── main_modern.py      # Interface graphique (CustomTkinter)
 ├── test.py             # Test interactif de l'évaluateur
-├── proget2/
-│   └── main.py         # Scanner de fichiers suspects (bonus)
+├── images/             # Captures d'écran du README
 ├── requirements.txt
 ├── .gitignore
 └── README.md
@@ -108,7 +122,7 @@ source venv/bin/activate        # Windows : venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-La version console et le scanner n'utilisent que la **bibliothèque standard** de Python.
+La version console n'utilise que la **bibliothèque standard** de Python.
 
 ---
 
@@ -131,12 +145,6 @@ python main.py
 ### Interface graphique
 ```bash
 python main_modern.py
-```
-
-### Scanner de fichiers suspects
-```bash
-cd proget2
-python main.py        # analyse le répertoire courant
 ```
 
 ### Utilisation en tant que bibliothèque
@@ -162,7 +170,6 @@ pyinstaller --onefile --windowed main_modern.py
 - **CSPRNG vs PRNG** : choix de `secrets` plutôt que `random`.
 - **Entropie** : taille de l'alphabet et longueur comme facteurs de résistance au brute-force.
 - **Politiques de complexité** et leurs limites.
-- **Détection par signature** : nom, hash, chaînes de caractères.
 - **Hygiène de saisie** : détection des caractères de contrôle et espaces accidentels.
 
 ---
@@ -174,8 +181,6 @@ L'évaluateur est **heuristique** et volontairement simple :
 - ne mesure pas l'entropie réelle (un mot de passe peut satisfaire tous les critères et rester prévisible, ex. `Azerty!2024x` est pénalisé, mais `Soleil#Paris9` passe malgré une structure courante) ;
 - n'utilise **pas de dictionnaire** étendu (type RockYou) ni de détection de séquences clavier avancée ;
 - ne vérifie pas si le mot de passe a fuité (ex. API [Have I Been Pwned](https://haveibeenpwned.com/API/v3#PwnedPasswords) en *k-anonymity*) ;
-- le scanner utilise **MD5**, algorithme obsolète pour la sécurité (SHA-256 recommandé), et lit les fichiers en mémoire en une seule fois ;
-- la détection par chaînes de caractères génère de nombreux **faux positifs** (le mot « password » est très courant).
 
 ---
 
@@ -185,15 +190,13 @@ L'évaluateur est **heuristique** et volontairement simple :
 - [ ] Vérification des fuites via HIBP (k-anonymity)
 - [ ] Dictionnaire de mots de passe courants en fichier externe
 - [ ] Options de génération (longueur, jeux de caractères, passphrases)
-- [ ] Migration du scanner vers SHA-256 et lecture par blocs
 - [ ] Tests unitaires (`pytest`) et intégration continue (GitHub Actions)
-- [ ] Journalisation et export des résultats du scanner
 
 ---
 
 ## 🧰 Technologies
 
-- **Python 3** : `secrets`, `string`, `hashlib`, `os`
+- **Python 3** : `secrets`, `string`
 - **CustomTkinter** : interface graphique
 - **PyInstaller** : packaging en exécutable
 
